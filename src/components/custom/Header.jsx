@@ -14,7 +14,7 @@ const Header = () => {
           />
 
           <h1 className="text-3xl font-extrabold tracking-tight">
-            <span className="text-slate-900">next</span>
+            <span className="text-[#0B1F4D]">next</span>
             <span className="bg-gradient-to-r from-cyan-500 to-teal-500 bg-clip-text text-transparent">
               Stop
             </span>
@@ -22,7 +22,7 @@ const Header = () => {
         </div>
 
         {/* Right Side */}
-        <Button className="px-6 py-5 rounded-lg">Sign In</Button>
+        <Button className="px-6 py-6 text-base rounded-xl">Sign In</Button>
       </div>
     </header>
   );
