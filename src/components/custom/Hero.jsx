@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 
 const Hero = () => {
@@ -8,7 +9,7 @@ const Hero = () => {
         <span className="text-[#0B1F4D]">
           Discover Your Next Adventure with AI:
         </span>
-        <br></br>
+        <br />
         <span className="bg-gradient-to-r from-cyan-500 to-teal-500 bg-clip-text text-transparent">
           Personalized Itineraries at Your Fingertips
         </span>
@@ -17,9 +18,12 @@ const Hero = () => {
         Your personal trip planner and travel curator, creating custom
         itineraries tailored to your interests and budgets.
       </p>
-      <Button className="px-6 py-6 text-base rounded-xl">
-        Get Started, It's Free
-      </Button>
+
+      <Link to="/create-trip">
+        <Button className="px-6 py-6 text-base rounded-xl">
+          Get Started, It's Free
+        </Button>
+      </Link>
     </div>
   );
 };

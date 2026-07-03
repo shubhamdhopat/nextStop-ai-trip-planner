@@ -6,6 +6,7 @@ const Header = () => {
     <header className="w-full shadow-sm bg-white">
       <div className="flex items-center justify-between px-6 py-3">
         {/* Left Side */}
+
         <div className="flex items-center gap-3">
           <img
             src="/nextStop.png"
