@@ -121,7 +121,7 @@ function DestinationSearch({ onSelect }) {
         onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
         placeholder="Search destination..."
-        className="h-12 text-base px-4"
+        // className="h-12 text-base px-4"
       />
 
       {loading && (
