@@ -4,6 +4,7 @@ import { Input } from "../components/ui/input.jsx";
 import { SelectBudgetOptions } from "@/constants/options.jsx";
 import { SelectTravelesList } from "@/constants/options.jsx";
 import { Button } from "../components/ui/button.jsx";
+import { toast } from "sonner";
 
 function CreateTrip() {
   const [formData, setFormData] = useState({});
@@ -18,6 +19,25 @@ function CreateTrip() {
   useEffect(() => {
     console.log("formData updated:", formData);
   }, [formData]);
+
+  const OnGenerateTrip = () => {
+    if (
+      !formData?.destination ||
+      !formData?.noOfDays ||
+      !formData?.budget ||
+      !formData?.traveler
+    ) {
+      toast("Please fill all the fields");
+      return;
+    }
+
+    if (formData?.noOfDays > 6 || formData?.noOfDays <= 0) {
+      toast("Trip Days must be between 1 to 6 days");
+      return;
+    }
+
+    console.log(formData);
+  };
 
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10">
@@ -47,16 +67,24 @@ function CreateTrip() {
           <Input
             placeholder={"Ex. 3 "}
             type="number"
-            // className="h-12 text-base px-4"
+            className="h-12 text-base px-4"
+            onChange={(e) => handleInputChange("noOfDays", e.target.value)}
           />
         </div>
+
         <div>
           <h2 className="text-xl my-3 font-medium">What is your Budget?</h2>
           <div className="grid grid-cols-3 gap-5 mt-5">
             {SelectBudgetOptions.map((item, index) => (
               <div
                 key={index}
-                className="p-4 border rounded-lg hover:shadow-lg cursor-pointer"
+                onClick={() => handleInputChange("budget", item.title)}
+                className={`p-4 border rounded-lg hover:shadow-lg cursor-pointer
+                  ${
+                    formData?.budget === item.title
+                      ? "shadow-lg border-black"
+                      : ""
+                  }`}
               >
                 <h2 className="text-4xl ">{item.icon}</h2>
                 <h2 className="text-lg font-bold">{item.title}</h2>
@@ -74,7 +102,13 @@ function CreateTrip() {
             {SelectTravelesList.map((item, index) => (
               <div
                 key={index}
-                className="p-4 border rounded-lg hover:shadow-lg cursor-pointer"
+                onClick={() => handleInputChange("traveler", item.people)}
+                className={`p-4 border rounded-lg hover:shadow-lg cursor-pointer
+                  ${
+                    formData?.traveler === item.people
+                      ? "shadow-lg border-black"
+                      : ""
+                  }`}
               >
                 <h2 className="text-4xl ">{item.icon}</h2>
                 <h2 className="text-lg font-bold">{item.title}</h2>
@@ -84,8 +118,11 @@ function CreateTrip() {
           </div>
         </div>
       </div>
+
       <div className="my-10 justify-end flex text-base rounded-xl">
-        <Button className="px-7 py-5 text-base">Generate Trip</Button>
+        <Button onClick={OnGenerateTrip} className="px-7 py-5 text-base">
+          Generate Trip
+        </Button>
       </div>
     </div>
   );

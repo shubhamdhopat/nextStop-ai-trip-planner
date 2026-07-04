@@ -19,8 +19,16 @@ function DestinationSearch({ onSelect }) {
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef(null);
   const sessionTokenRef = useRef(crypto.randomUUID());
+  const skipFetchRef = useRef(false); // true right after a selection, to suppress the re-fetch
 
   useEffect(() => {
+    // If this query change came from handleSelect (not typing), skip the fetch
+    // and reset the flag so normal typing resumes working next time.
+    if (skipFetchRef.current) {
+      skipFetchRef.current = false;
+      return;
+    }
+
     if (!query || query.length < 2) {
       setSuggestions([]);
       return;
@@ -77,7 +85,9 @@ function DestinationSearch({ onSelect }) {
   }
 
   async function handleSelect(suggestion) {
+    skipFetchRef.current = true; // tell the effect to ignore this query change
     setQuery(suggestion.text);
+    setSuggestions([]);
     setShowDropdown(false);
 
     try {
@@ -121,7 +131,7 @@ function DestinationSearch({ onSelect }) {
         onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
         placeholder="Search destination..."
-        // className="h-12 text-base px-4"
+        className="h-12 text-base px-4"
       />
 
       {loading && (

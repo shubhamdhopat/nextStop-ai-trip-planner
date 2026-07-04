@@ -7,6 +7,7 @@ import "./index.css";
 import App from "./App.jsx";
 import CreateTrip from "./create-trip/index.jsx";
 import Header from "./components/custom/Header.jsx";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,8 @@ createRoot(document.getElementById("root")).render(
       version="beta"
     >
       <Header />
+
+      <Toaster />
       <RouterProvider router={router} />
     </APIProvider>
   </StrictMode>,
