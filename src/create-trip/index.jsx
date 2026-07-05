@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import DestinationSearch from "./DestinationSearch.jsx";
 import { Input } from "../components/ui/input.jsx";
-import { SelectBudgetOptions } from "@/constants/options.jsx";
+import { AI_PROMPT, SelectBudgetOptions } from "@/constants/options.jsx";
 import { SelectTravelesList } from "@/constants/options.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { toast } from "sonner";
+import { chatSession } from "../service/AIModel.jsx";
 
 function CreateTrip() {
   const [formData, setFormData] = useState({});
@@ -20,7 +21,7 @@ function CreateTrip() {
     console.log("formData updated:", formData);
   }, [formData]);
 
-  const OnGenerateTrip = () => {
+  const OnGenerateTrip = async () => {
     if (
       !formData?.destination ||
       !formData?.noOfDays ||
@@ -36,7 +37,19 @@ function CreateTrip() {
       return;
     }
 
-    console.log(formData);
+    const FINAL_PROMPT = AI_PROMPT.replace(
+      "{location}",
+      formData?.destination?.address,
+    )
+      .replace("{totalDays}", formData?.noOfDays)
+      .replace("{traveler}", formData?.traveler)
+      .replace("{budget}", formData?.budget)
+      .replace("{totalDays}", formData?.noOfDays);
+    console.log("FINAL_PROMPT", FINAL_PROMPT);
+
+    const result = await chatSession.sendMessage({ message: FINAL_PROMPT });
+
+    console.log(result?.text);
   };
 
   return (
