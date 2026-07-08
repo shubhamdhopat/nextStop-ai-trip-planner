@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import DestinationSearch from "./DestinationSearch.jsx";
 import { Input } from "../components/ui/input.jsx";
 import { AI_PROMPT, SelectBudgetOptions } from "@/constants/options.jsx";
@@ -6,9 +6,21 @@ import { SelectTravelesList } from "@/constants/options.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { toast } from "sonner";
 import { chatSession } from "../service/AIModel.jsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function CreateTrip() {
   const [formData, setFormData] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({
@@ -21,7 +33,18 @@ function CreateTrip() {
     console.log("formData updated:", formData);
   }, [formData]);
 
+  const login = useGoogleLogin({
+    onSuccess: (codeResp) => GetUserProfile(codeResp),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
   const OnGenerateTrip = async () => {
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      setOpenDialog(true);
+      return;
+    }
     if (
       !formData?.destination ||
       !formData?.noOfDays ||
@@ -50,6 +73,25 @@ function CreateTrip() {
     const result = await chatSession.sendMessage({ message: FINAL_PROMPT });
 
     console.log(result?.text);
+  };
+
+  const GetUserProfile = (tokenInfo) => {
+    axios
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,
+        {
+          Headers: {
+            Authorization: `Bearer ${tokenInfo?.access_token}`,
+            Accept: "application/json",
+          },
+        },
+      )
+      .then((resp) => {
+        console.log(resp);
+        localStorage.setItem("user", JSON.stringify(resp?.data));
+        setOpenDialog(false);
+        OnGenerateTrip();
+      });
   };
 
   return (
@@ -137,6 +179,39 @@ function CreateTrip() {
           Generate Trip
         </Button>
       </div>
+      <Dialog open={openDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogDescription>
+              <div className="flex items-center gap-1 mb-5">
+                <img
+                  src="/nextStop.png"
+                  alt="NextStop Logo"
+                  className="h-12 w-auto"
+                />
+
+                <h1 className="text-3xl font-extrabold tracking-tight">
+                  <span className="text-[#0B1F4D]">next</span>
+                  <span className="bg-gradient-to-r from-cyan-500 to-teal-500 bg-clip-text text-transparent">
+                    Stop
+                  </span>
+                </h1>
+              </div>
+              <h2 className="font-bold text-lg" mt-7>
+                Sign In with Google
+              </h2>
+              <p>Sign in to your Google account to continue</p>
+              <Button
+                onClick={login}
+                className="w-full mt-5  flex-gap-4 align-items-center"
+              >
+                <FcGoogle className="h-7 w-7" />
+                Sign In with Google
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
