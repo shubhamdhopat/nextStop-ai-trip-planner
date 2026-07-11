@@ -17,10 +17,15 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/service/firebaseConfig.jsx";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function CreateTrip() {
   const [formData, setFormData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({
@@ -60,6 +65,7 @@ function CreateTrip() {
       return;
     }
 
+    setLoading(true);
     const FINAL_PROMPT = AI_PROMPT.replace(
       "{location}",
       formData?.destination?.address,
@@ -68,13 +74,28 @@ function CreateTrip() {
       .replace("{traveler}", formData?.traveler)
       .replace("{budget}", formData?.budget)
       .replace("{totalDays}", formData?.noOfDays);
-    console.log("FINAL_PROMPT", FINAL_PROMPT);
+    // console.log("FINAL_PROMPT", FINAL_PROMPT);
 
     const result = await chatSession.sendMessage({ message: FINAL_PROMPT });
 
     console.log(result?.text);
+    setLoading(false);
+    SaveAiTrip(result?.text);
   };
 
+  const SaveAiTrip = async (TripData) => {
+    setLoading(true);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const docId = Date.now().toString();
+
+    await setDoc(doc(db, "AITrips", docId), {
+      userSelection: formData,
+      tripData: JSON.parse(TripData),
+      userEmail: user?.email,
+      id: docId,
+    });
+    setLoading(false);
+  };
   const GetUserProfile = (tokenInfo) => {
     axios
       .get(
@@ -175,8 +196,16 @@ function CreateTrip() {
       </div>
 
       <div className="my-10 justify-end flex text-base rounded-xl">
-        <Button onClick={OnGenerateTrip} className="px-7 py-5 text-base">
-          Generate Trip
+        <Button
+          disabled={loading}
+          onClick={OnGenerateTrip}
+          className="px-7 py-5 text-base"
+        >
+          {loading ? (
+            <AiOutlineLoading3Quarters className="animate-spin" h-7 w-7 />
+          ) : (
+            "Generate Trip"
+          )}
         </Button>
       </div>
       <Dialog open={openDialog}>
