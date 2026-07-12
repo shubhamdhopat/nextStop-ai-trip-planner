@@ -9,6 +9,7 @@ import App from "./App.jsx";
 import CreateTrip from "./create-trip/index.jsx";
 import Header from "./components/custom/Header.jsx";
 import { Toaster } from "sonner";
+import Viewtrip from "./view-trip/[tripId]/index.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/create-trip",
     element: <CreateTrip />,
+  },
+  {
+    path: "/view-trip/:tripId",
+    element: <Viewtrip />,
   },
 ]);
 
