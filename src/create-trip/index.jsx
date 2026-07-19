@@ -5,7 +5,7 @@ import { AI_PROMPT, SelectBudgetOptions } from "@/constants/options.jsx";
 import { SelectTravelesList } from "@/constants/options.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { toast } from "sonner";
-import { chatSession } from "../service/AIModel.jsx";
+import { createChatSession } from "../service/AIModel.jsx";
 import {
   Dialog,
   DialogContent,
@@ -77,8 +77,8 @@ function CreateTrip() {
       .replace("{traveler}", formData?.traveler)
       .replace("{budget}", formData?.budget)
       .replace("{totalDays}", formData?.noOfDays);
-    // console.log("FINAL_PROMPT", FINAL_PROMPT);
 
+    const chatSession = createChatSession(); // ← new line: fresh session, no leftover Vegas history
     const result = await chatSession.sendMessage({ message: FINAL_PROMPT });
 
     console.log(result?.text);
@@ -215,25 +215,23 @@ function CreateTrip() {
       <Dialog open={openDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogDescription>
-              <div className="flex items-center gap-1 mb-5">
-                <img
-                  src="/nextStop.png"
-                  alt="NextStop Logo"
-                  className="h-12 w-auto"
-                />
+            <div className="flex items-center gap-1 mb-5">
+              <img
+                src="/nextStop.png"
+                alt="NextStop Logo"
+                className="h-12 w-auto"
+              />
 
-                <h1 className="text-3xl font-extrabold tracking-tight">
-                  <span className="text-[#0B1F4D]">next</span>
-                  <span className="bg-gradient-to-r from-cyan-500 to-teal-500 bg-clip-text text-transparent">
-                    Stop
-                  </span>
-                </h1>
-              </div>
-              <h2 className="font-bold text-lg" mt-7>
-                Sign In with Google
-              </h2>
-              <p>Sign in to your Google account to continue</p>
+              <h1 className="text-3xl font-extrabold tracking-tight">
+                <span className="text-[#0B1F4D]">next</span>
+                <span className="bg-gradient-to-r from-cyan-500 to-teal-500 bg-clip-text text-transparent">
+                  Stop
+                </span>
+              </h1>
+            </div>
+            <DialogTitle className="mt-2">Sign In with Google</DialogTitle>
+            <DialogDescription>Sign in to your Google account to continue</DialogDescription>
+            <div className="mt-4">
               <Button
                 onClick={login}
                 className="w-full mt-5  flex-gap-4 align-items-center"
@@ -241,7 +239,7 @@ function CreateTrip() {
                 <FcGoogle className="h-7 w-7" />
                 Sign In with Google
               </Button>
-            </DialogDescription>
+            </div>
           </DialogHeader>
         </DialogContent>
       </Dialog>
