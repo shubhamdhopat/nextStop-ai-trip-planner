@@ -5,6 +5,8 @@ import { db } from "@/service/firebaseConfig.jsx";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useState } from "react";
+import InfoSection from "./components/InfoSection.jsx";
+import Hotels from "./components/Hotels.jsx";
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -26,7 +28,19 @@ function Viewtrip() {
       toast("No trip found!");
     }
   };
-  return <div>Viewtrip : {tripId}</div>;
+  return (
+    <div className="p-10 md:px-20 lg:px-44 xl:px-56">
+      {/* Information Section */}
+      <InfoSection trip={trip} />
+
+      {/* Recommended Hotels */}
+      <Hotels trip={trip} />
+
+      {/* Daily Plan */}
+
+      {/*footer Section */}
+    </div>
+  );
 }
 
 export default Viewtrip;
