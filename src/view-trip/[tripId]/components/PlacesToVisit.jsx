@@ -13,12 +13,12 @@ function PlacesToVisit({ trip }) {
 
           return (
             <div className="mt-5" key={index}>
-              <h2 className="font-medium text-lg">Day {item.Day}</h2>
+              <h2 className="font-medium text-lg">Day {item.day}</h2>
               <div className="grid md:grid-cols-2 gap-5">
                 {plan.map((place, placeIndex) => (
                   <div className="my-3" key={placeIndex}>
                     <h2 className="font-medium text-sm text-orange-600">
-                      {place?.BestTimeToVisit}
+                      {place?.bestTimeToVisit}
                     </h2>
                     <PlaceCardItem place={place} />
                   </div>
