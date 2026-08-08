@@ -20,7 +20,7 @@ function PlaceCardItem({ place }) {
         "{NAME}",
         resp.data.places[0].photos[3].name,
       );
-      console.log(PhotoUrl);
+      // console.log(PhotoUrl);
       setPhotoUrl(PhotoUrl);
     });
   };
