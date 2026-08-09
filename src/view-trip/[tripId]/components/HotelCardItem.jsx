@@ -5,7 +5,6 @@ import { GetPlacesDetails, PHOTO_REF_URL } from "@/service/GlobalApi";
 function HotelCardItem({ hotel }) {
   const [photoUrl, setPhotoUrl] = useState("");
 
-  // Extract everything here
   const name = hotel?.hotelName || hotel?.HotelName;
   const address = hotel?.hotelAddress || hotel?.HotelAddress;
   const price = hotel?.price || hotel?.PricePerNightINR;
